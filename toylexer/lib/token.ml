@@ -3,6 +3,7 @@ type token =
   | RPAREN
   | ASSIGN
   | PLUS
+  | MINUS
   | SEQ
   | ID of string
   | CONST of string
@@ -13,6 +14,7 @@ let string_of_token = function
   | RPAREN -> "RPAREN"
   | ASSIGN -> "ASSIGN"
   | PLUS -> "PLUS"
+  | MINUS -> "MINUS"
   | SEQ -> "SEQ"
   | ID(s) -> "ID(" ^ s ^ ")"
   | CONST(s) -> "CONST(" ^ s ^ ")"

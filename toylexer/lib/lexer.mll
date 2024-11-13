@@ -15,6 +15,7 @@ rule read_token =
   | ")" { RPAREN }
   | "=" { ASSIGN }
   | "+" { PLUS }
+  | "-" { MINUS }
   | ";" { SEQ }  
   | id { ID (Lexing.lexeme lexbuf) }
   | num { CONST (Lexing.lexeme lexbuf) }    
