@@ -1,11 +1,11 @@
 open Ast
 
-let rec string_of_boolexpr = function
+(* let rec string_of_boolexpr = function
     True -> "True"
   | False -> "False"
   | If(e0,e1,e2) -> "If(" ^ (string_of_boolexpr e0) ^ "," ^ (string_of_boolexpr e1) ^ "," ^ (string_of_boolexpr e2) ^ ")"
 
-
+ *)
 let parse (s : string) : boolExpr =
   let lexbuf = Lexing.from_string s in
   let ast = Parser.prog Lexer.read lexbuf in
@@ -32,4 +32,7 @@ let rec eval = function
   | False -> false
   | If(e0,e1,e2) -> 
       if eval e0 then eval e1 else eval e2
-;;
+  | Not e -> not(eval e)
+  | And (e1,e2)->if eval e1 then eval e2 else false  (*we could've used the AND or the OR implemented by Ocaml*)
+  | Or (e1,e2)-> if eval e1 then true else eval e2
+;; 
