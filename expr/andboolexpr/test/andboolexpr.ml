@@ -97,3 +97,12 @@ let%test "test_smallstep16" = test_smallstep "true or false and false" (Some tru
 let%test "test_smallstep17" = test_smallstep "if true then true else false and false" (Some true)
 
 let%test "test_smallstep18" = test_smallstep "if true then false else false or true" (Some false)
+
+(* associativity tests *)
+
+let%test "test_assoc1" = parse "not true or true" |> eval = true 
+let%test "test_assoc2" = parse "not true and false" |> eval = false 
+let%test "test_assoc3" = parse "false and false or true" |> eval = true 
+let%test "test_assoc4" = parse "true or false and false" |> eval = true 
+let%test "test_assoc5" = parse "if true then true else false and false" |> eval = true 
+let%test "test_assoc6" = parse "if true then false else false or true" |> eval = false 

@@ -14,6 +14,10 @@ open Ast
 %token AND
 %token OR
 
+%nonassoc ELSE
+%left OR
+%left AND
+%nonassoc NOT
 
 %start <boolExpr> prog
 
