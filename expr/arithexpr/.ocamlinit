@@ -1,2 +1,3 @@
 open ArithexprLib.Main
+open ArithexprLib.Ast
 open ArithexprTest.Arithexpr
