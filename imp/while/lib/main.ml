@@ -39,32 +39,34 @@ let bottom:state = (fun id -> raise @@ UnboundVar("Unbound var '"^id^"'"));;
 
 let bind (st:state) (x:ide) (v:exprval) = ((fun id -> if id=x then v else st id):state);;
 
-let rec trace1 (st:state) = function
-    Skip -> St st
-  | Assign(x,v) -> St (bind st x (eval_expr st v))
-  | Seq(c1,c2) -> 
-    (let res = trace1 st c1 in
-      match res with
-        St st' -> Cmd(c2,st')
-      | Cmd(c1',st') -> Cmd(Seq(c1',c2),st'))
-  | If(e,c1,c2) -> if (eval_expr st e = Bool true) then Cmd(c1,st) else Cmd(c2,st)
-  | While(e,c) -> if (eval_expr st e = Bool true) then Cmd(Seq(c,While(e,c)), st) else St st
+let rec trace1 = function
+  Cmd(cmd,st) -> 
+    (match cmd with
+        Skip -> St st
+      | Assign(x,v) -> St (bind st x (eval_expr st v))
+      | Seq(c1,c2) -> 
+        (let res = (trace1 @@ Cmd(c1,st)) in
+          match res with
+            St st' -> Cmd(c2,st')
+          | Cmd(c1',st') -> Cmd(Seq(c1',c2),st'))
+      | If(e,c1,c2) -> if (eval_expr st e = Bool true) then Cmd(c1,st) else Cmd(c2,st)
+      | While(e,c) -> if (eval_expr st e = Bool true) then Cmd(Seq(c,While(e,c)), st) else St st)
+  | St _ -> raise NoRuleApplies
 ;;
+
 
 let trace n cmd =
   let bottom:state = (fun id -> raise @@ UnboundVar("Unbound var '"^id^"'")) in
-
-  let rec rectrace n (cmd:cmd) (st:state) =
-    if n>0 then (
-      let step = trace1 st cmd in
-      match step with
-        St s -> [St s]
-      | Cmd(c,s) -> step::(rectrace (n-1) c s) 
-    )
+  let rec rectrace n conf =
+    if n>0 then
+      try 
+        let step = trace1 conf in
+        conf::(rectrace (n-1) step) 
+      with NoRuleApplies -> [conf]
     else []
   in
 
-  Cmd(cmd,bottom)::(rectrace n cmd bottom)
+  rectrace n (Cmd(cmd,bottom))
 ;;
 
 let rec getstate = function
