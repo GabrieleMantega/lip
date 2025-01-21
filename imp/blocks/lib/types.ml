@@ -42,8 +42,8 @@ let popenv st =
 
 let make_state envstack memory firstloc = { envstack; memory; firstloc }
 
-let bind_env f x v y = if String.equal x y then v else f y
-let bind_mem f x v y = if Int.equal x y then v else f y
+let bind_env env x l = (fun ide -> if String.equal x ide then l else env ide)
+let bind_mem mem l v = (fun loc -> if Int.equal l loc then v else mem loc)
 
 let bottom_env : env = fun x -> raise (UnboundVar x)
 let bottom_mem : mem = fun l -> raise (UnboundLoc l)
