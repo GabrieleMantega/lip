@@ -1,6 +1,12 @@
 open Ast
 open Types 
 
+type typecheck = BoolT | IntT
+let string_of_type = function
+    BoolT -> "Bool"
+  | IntT -> "Int"
+;;
+
 let parse (s : string) : cmd =
   let lexbuf = Lexing.from_string s in
   let ast = Parser.prog Lexer.read lexbuf in
@@ -67,14 +73,22 @@ let rec eval_decl_list st = function
   | d::l -> eval_decl_list (eval_decl (st) (d)) l 
 ;;
 
+let loc_typecheck v l =
+  let vtype = match v with Bool _ -> BoolT | Int _ -> IntT in
+  let ltype = match l with BVar _ -> BoolT | IVar _ -> IntT in
+  if vtype <> ltype then 
+    raise @@ TypeError ("Cannot assign "^string_of_type(vtype)^" value to "^string_of_type(ltype)^" variable")
+  else None
+;;
+
 let rec trace1 = function
   Cmd(cmd,st) ->
     (match cmd with
       Skip -> St st
     | Assign(x,v) -> 
-      (* TODO: typecheck *)
       let value = eval_expr st v in
       let loc = findLoc st x in
+      let _ = loc_typecheck value loc in
       let st' = 
         setmem st (
           bind_mem 

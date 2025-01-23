@@ -51,3 +51,5 @@ let bottom_mem : mem = fun l -> raise (UnboundLoc l)
 let state0 = make_state [bottom_env] bottom_mem 0
 
 type conf = St of state | Cmd of cmd * state
+
+type typecheck = BoolT | IntT
