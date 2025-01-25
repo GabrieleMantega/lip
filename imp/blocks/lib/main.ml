@@ -106,13 +106,16 @@ let rec trace1 = function
     | Decl(dl,c) -> 
       let st' = setenv (st) (bottom_env::getenv st) in
       let st'' = eval_decl_list (st') dl in Cmd(Block(c),st'')
-    | Block(c) -> Cmd(c, st))
+    | Block(c) -> 
+      match trace1 @@ Cmd(c, st) with
+        St st' -> St (setenv st' (popenv st'))
+      | Cmd(c',st') -> Cmd(Block c',st'))
   | St _ -> raise NoRuleApplies
 ;;
 
 let trace n cmd =
   let rec rectrace n conf =
-    if n>0 then
+    if n>=0 then
       try 
         let step = trace1 conf in
         conf::(rectrace (n-1) step) 
