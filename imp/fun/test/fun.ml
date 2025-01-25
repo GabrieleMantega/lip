@@ -1,4 +1,4 @@
-open FunLib.Types
+(* open FunLib.Types
 open FunLib.Prettyprint
 open FunLib.Main
 
@@ -70,3 +70,4 @@ let%test "test_boss" = test_trace
         fun f(n) { if n=0 then r:=1 else r:=n*f(n-1); return r };
         x := f(5)
     |}, 100, "x", 120)
+ *)

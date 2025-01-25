@@ -1,4 +1,4 @@
-open FunLib.Types
+(* open FunLib.Types
 open FunLib.Prettyprint
 open FunLib.Main
 
@@ -34,3 +34,4 @@ match Array.length Sys.argv with
     | s -> s |> parse |> fun p -> trace n p |> print_trace (vars_of_prog p))
 (* wrong usage *)
 | _ -> failwith "Usage: dune exec fun n_steps [file]"
+ *)
